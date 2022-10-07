@@ -29,3 +29,8 @@ Follow the steps:
 - git clone
 - npm i
 - ng serve
+
+Shaduryna Task 2.1
+
+S3Bucket: http://shaduryn-second-bucket.s3-website-us-east-1.amazonaws.com/
+CloudFront: https://d2ijufhhgsu0my.cloudfront.net
