@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
-import { EMPTY, Observable, of, throwError } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { EMPTY, Observable, of } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
 
 import { Product } from './product.interface';
 
@@ -56,15 +56,9 @@ export class ProductsService extends ApiService {
   }
 
   getProducts(): Observable<Product[]> {
-    if (!this.endpointEnabled('bff')) {
-      console.warn(
-        'Endpoint "bff" is disabled. To enable change your environment.ts config'
-      );
-      return this.http.get<Product[]>('/assets/products.json');
-    }
-
-    const url = this.getUrl('bff', 'products');
-    return this.http.get<Product[]>(url);
+    const url =
+      'https://hlmn5evit3.execute-api.us-east-1.amazonaws.com/products';
+    return this.http.get<any>(url);
   }
 
   getProductsForCheckout(ids: string[]): Observable<Product[]> {
@@ -73,7 +67,9 @@ export class ProductsService extends ApiService {
     }
 
     return this.getProducts().pipe(
-      map((products) => products.filter((product) => ids.includes(product.id)))
+      map((products) =>
+        products.filter((product) => ids.includes(product.id.toString()))
+      )
     );
   }
 }
