@@ -50,15 +50,19 @@ export class ProductsService extends ApiService {
     }
 
     const url = this.getUrl('bff', `products/${id}`);
-    return this.http
-      .get<{ product: Product }>(url)
-      .pipe(map((resp) => resp.product));
+    return this.http.get<Product>(url);
   }
 
   getProducts(): Observable<Product[]> {
-    const url =
-      'https://hlmn5evit3.execute-api.us-east-1.amazonaws.com/products';
-    return this.http.get<any>(url);
+    if (!this.endpointEnabled('bff')) {
+      console.warn(
+        'Endpoint "bff" is disabled. To enable change your environment.ts config'
+      );
+      return this.http.get<Product[]>('/assets/products.json');
+    }
+
+    const url = this.getUrl('bff', 'products');
+    return this.http.get<Product[]>(url);
   }
 
   getProductsForCheckout(ids: string[]): Observable<Product[]> {
@@ -67,9 +71,7 @@ export class ProductsService extends ApiService {
     }
 
     return this.getProducts().pipe(
-      map((products) =>
-        products.filter((product) => ids.includes(product.id.toString()))
-      )
+      map((products) => products.filter((product) => ids.includes(product.id)))
     );
   }
 }
